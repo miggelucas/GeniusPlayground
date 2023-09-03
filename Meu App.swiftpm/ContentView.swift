@@ -60,7 +60,7 @@ struct ContentView: View {
                 Spacer ()
                 
                 Button {
-                    
+                    viewModel.startGame()
                 } label: {
                     Text("Start")
                         .padding(.horizontal, 50)

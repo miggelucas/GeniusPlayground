@@ -16,9 +16,40 @@ class AudioManager {
         return Bundle.main.url(forResource: sound.rawValue, withExtension: "wav")
     }
     
-    public func playeFXSound(sound: FXSounds) {
+    private func getSoundRelatedToColor(color: GameMove) -> FXSounds {
+        switch color {
+
+        case .blue:
+            return .pickupCoin1
+        case .green:
+            return .pickupCoin2
+        case .red:
+            return .pickupCoin3
+        case .yellow:
+            return .pickupCoin4
+        }
+    }
+    
+    public func playGameOverSound() {
         
-        guard let soundURL = getSoundURL(sound: sound) else {
+        guard let url = Bundle.main.url(forResource: FXSounds.explosion.rawValue, withExtension: "wav") else {
+            return
+        }
+        
+        do {
+            soundPlayer = try AVAudioPlayer(contentsOf: url)
+            soundPlayer?.play()
+        } catch let error {
+            print("Erro ao reproduzir fx: \(error.localizedDescription)")
+        }
+    }
+    
+    public func playeFXSound(color: GameMove) {
+        soundPlayer = nil
+        
+        let soundOfButton: FXSounds = getSoundRelatedToColor(color: color)
+        
+        guard let soundURL = getSoundURL(sound: soundOfButton) else {
             print("url não encontrado")
             return
         }
@@ -29,14 +60,11 @@ class AudioManager {
         } catch let error {
             print("Erro ao reproduzir fx: \(error.localizedDescription)")
         }
-
-        
-        
     }
     
 }
 
-enum FXSounds: String {
-    case pickupCoin1, pickupCoin2, pickupCoin3, pickupCoin4
+enum FXSounds: String, CaseIterable {
+    case pickupCoin1, pickupCoin2, pickupCoin3, pickupCoin4, explosion
     
 }

@@ -6,35 +6,140 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 class MainViewModel: ObservableObject {
     
+    
     var audioManager = AudioManager()
+    
+    enum State {
+        case off, playing, waitingUserResponse
+    }
+    
+    @Published var state: State = .off
     
     @Published var isGreenActive: Bool = false
     @Published var isRedActive: Bool = false
     @Published var isBlueActive: Bool = false
     @Published var isYellowActive: Bool = false
     
+    var gameMoves: [GameMove] = []
+    var userMoves: [GameMove] = []
+    
     
     public func greenButtonPressed() {
-        audioManager.playeFXSound(sound: .pickupCoin1)
+        if state == .waitingUserResponse  {
+            checkplay(move: .green)
+            isGreenActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isGreenActive = false
+            }
+        }
+       
         
     }
     
     public func redButtonPressed() {
-        audioManager.playeFXSound(sound: .pickupCoin2)
+        if state == .waitingUserResponse  {
+            checkplay(move: .red)
+            isRedActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isRedActive = false
+            }
+        }
         
     }
     
     public func blueButtonPressed() {
-        audioManager.playeFXSound(sound: .pickupCoin3)
+        if state == .waitingUserResponse  {
+            checkplay(move: .blue)
+            isBlueActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isBlueActive = false
+            }
+        }
         
         
     }
     
     public func yellowButtonPressed() {
-        audioManager.playeFXSound(sound: .pickupCoin4)
+        if state == .waitingUserResponse  {
+            checkplay(move: .yellow)
+            isYellowActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isYellowActive = false
+            }
+        }
     }
+    
+    func startGame() {
+        userMoves = []
+        gameMoves = []
+        state = .playing
+        nextRound()
+
+        
+    }
+    
+    func checkplay(move: GameMove) {
+        
+        userMoves.append(move)
+        
+        var checkIndex: Int = 0
+        
+        for (index, element) in userMoves.enumerated() {
+            if element != gameMoves[index] {
+                gameOver()
+                return
+            } else {
+                audioManager.playeFXSound(color: move)
+                checkIndex += 1
+            }
+        }
+        
+        if checkIndex == gameMoves.count {
+            self.state = .playing
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        
+                self.nextRound()
+                
+            }
+           
+        }
+        
+    }
+
+    
+    func gameOver() {
+        state = .off
+        userMoves = []
+        gameMoves = []
+        audioManager.playGameOverSound()
+        print("Errou otaru")
+        
+    }
+    
+    func nextRound() {
+        userMoves = []
+        gameMoves.append(GameMove.allCases.randomElement()!)
+        
+        for (index, element) in gameMoves.enumerated() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
+                print(element)
+                self?.audioManager.playeFXSound(color: element)
+                if index == (self?.gameMoves.count)! - 1 {
+                    self?.state = .waitingUserResponse
+                }
+            }
+        }
+        
+
+        
+    }
+}
+
+enum GameMove: CaseIterable {
+    case blue, green, red, yellow
 }
