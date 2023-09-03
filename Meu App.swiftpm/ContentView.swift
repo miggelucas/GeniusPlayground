@@ -1,14 +1,10 @@
 import SwiftUI
 
+
+
 struct ContentView: View {
     
-    var audioManager = AudioManager()
-    
-    @State var isGreenActive: Bool = false
-    @State var isRedActive: Bool = false
-    @State var isBlueActive: Bool = false
-    @State var isYellowActive: Bool = false
-    
+    @StateObject var viewModel = MainViewModel()
     
     var body: some View {
         ZStack {
@@ -20,46 +16,46 @@ struct ContentView: View {
                 
                 VStack(spacing: 30) {
                     Button {
-                        audioManager.playeFXSound(sound: .pickupCoin1)
+                        viewModel.greenButtonPressed()
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
-                            .shadow(color: isGreenActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isGreenActive ? .white : .black, radius: 5, y: 2 )
                             
                     }
                     
                     Button {
-                        audioManager.playeFXSound(sound: .pickupCoin2)
+                        viewModel.redButtonPressed()
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.red)
-                            .shadow(color: isRedActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isRedActive ? .white : .black, radius: 5, y: 2 )
                     }
 
                     
                     Button {
-                        audioManager.playeFXSound(sound: .pickupCoin3)
+                        viewModel.blueButtonPressed()
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.blue)
-                            .shadow(color: isBlueActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isBlueActive ? .white : .black, radius: 5, y: 2 )
                     }
 
                     
                     Button {
-                        audioManager.playeFXSound(sound: .pickupCoin4)
+                        viewModel.yellowButtonPressed()
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.yellow)
-                            .shadow(color: isYellowActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isYellowActive ? .white : .black, radius: 5, y: 2 )
                     }
 
 
                 }
-                
+
                 
                 Spacer ()
                 
@@ -86,7 +82,6 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    
     
     static var previews: some View {
         ContentView()
