@@ -20,7 +20,7 @@ struct ContentView: View {
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
-                            .shadow(color: viewModel.isGreenActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
                             
                     }
                     
@@ -30,7 +30,7 @@ struct ContentView: View {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.red)
-                            .shadow(color: viewModel.isRedActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
                     }
 
                     
@@ -40,7 +40,7 @@ struct ContentView: View {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.blue)
-                            .shadow(color: viewModel.isBlueActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )
                     }
 
                     
@@ -50,7 +50,7 @@ struct ContentView: View {
                         Capsule(style: .circular)
                             .frame(width: 100, height: 10)
                             .foregroundColor(.yellow)
-                            .shadow(color: viewModel.isYellowActive ? .white : .black, radius: 5, y: 2 )
+                            .shadow(color: viewModel.isYellowActive ? .yellow : .black, radius: 5, y: 2 )
                     }
 
 
