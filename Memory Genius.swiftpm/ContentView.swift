@@ -61,49 +61,56 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                VStack(spacing: 50) {
+                VStack(spacing: 30) {
                     Button {
                         viewModel.greenButtonPressed()
                     } label: {
-                        Capsule(style: .circular)
-                            .frame(width: 200, height: 20)
+                        TrapezoidShape()
+                            .rotation(.degrees(180))
+                            .frame(width: 200, height: 75)
 //                            .animation(.easeInOut(duration: 0.5), value: viewModel.isGreenActive)
                             .foregroundColor(.green)
                             .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
                             
                     }
-                    
-                    Button {
-                        viewModel.redButtonPressed()
-                    } label: {
-                        Capsule(style: .circular)
-                            .frame(width: 200, height: 20)
-                            .foregroundColor(.red)
-                            .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
-                    }
+                    HStack(spacing: 0) {
+                        Button {
+                            viewModel.redButtonPressed()
+                        } label: {
+                            TrapezoidShape()
+                                .rotation(.degrees(90))
+                                .frame(width: 200, height: 75)
+                                .foregroundColor(.red)
+                                .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
+                        }
 
-                    
-                    Button {
-                        viewModel.blueButtonPressed()
-                    } label: {
-                        Capsule(style: .circular)
-                            .frame(width: 200, height: 20)
-                            .foregroundColor(.blue)
-                            .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )
+                        
+                        Button {
+                            viewModel.blueButtonPressed()
+                        } label: {
+                            TrapezoidShape()
+                                .rotation(.degrees(270))
+                                .frame(width: 200, height: 75)
+                                .foregroundColor(.blue)
+                                .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )
+                        }
                     }
+                    
+   
 
                     
                     Button {
                         viewModel.yellowButtonPressed()
                     } label: {
-                        Capsule(style: .circular)
-                            .frame(width: 200, height: 20)
+                        TrapezoidShape()
+                            .frame(width: 200, height: 75)
                             .foregroundColor(.yellow)
                             .shadow(color: viewModel.isYellowActive ? .yellow : .black, radius: 5, y: 2 )
                     }
 
 
                 }
+
 
                 
                 Spacer()
@@ -131,6 +138,7 @@ struct ContentView: View {
 
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     

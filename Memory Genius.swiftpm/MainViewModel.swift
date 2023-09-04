@@ -119,7 +119,7 @@ class MainViewModel: ObservableObject {
         gameMoves.append(GameMove.allCases.randomElement()!)
         
         for (index, element) in gameMoves.enumerated() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.1) { [weak self] in
                 self?.glowButton(move: element)
                 self?.audioManager.playeFXSound(color: element)
                 
@@ -138,18 +138,18 @@ class MainViewModel: ObservableObject {
             
         case .blue:
             isBlueActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
                 self.isBlueActive = false
             }
         case .green:
             isGreenActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
                 self.isGreenActive = false
             }
             
         case .red:
             isRedActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
                 self.isRedActive = false
             }
         case .yellow:
