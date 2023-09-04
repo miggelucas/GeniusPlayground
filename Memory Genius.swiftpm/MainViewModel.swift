@@ -11,8 +11,7 @@ import SwiftUI
 
 class MainViewModel: ObservableObject {
     
-    
-    var audioManager = AudioManager()
+    private var audioManager = AudioManager()
     
     enum State {
         case off, playing, waitingUserResponse
@@ -25,36 +24,8 @@ class MainViewModel: ObservableObject {
     @Published var isBlueActive: Bool = false
     @Published var isYellowActive: Bool = false
     
-    var gameMoves: [GameMove] = []
-    var userMoves: [GameMove] = []
-    
-    private func glowButton(move: GameMove) {
-        switch move {
-            
-        case .blue:
-            isBlueActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isBlueActive = false
-            }
-        case .green:
-            isGreenActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isGreenActive = false
-            }
-
-        case .red:
-            isRedActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isRedActive = false
-            }
-        case .yellow:
-            isYellowActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isYellowActive = false
-            }
-        }
-        
-    }
+    private var gameMoves: [GameMove] = []
+    private var userMoves: [GameMove] = []
     
     
     public func greenButtonPressed() {
@@ -68,7 +39,7 @@ class MainViewModel: ObservableObject {
         if state == .waitingUserResponse  {
             checkplay(move: .red)
             glowButton(move: .red)
-           
+            
         }
         
     }
@@ -77,7 +48,7 @@ class MainViewModel: ObservableObject {
         if state == .waitingUserResponse  {
             checkplay(move: .blue)
             glowButton(move: .blue)
-           
+            
         }
         
         
@@ -87,20 +58,25 @@ class MainViewModel: ObservableObject {
         if state == .waitingUserResponse  {
             checkplay(move: .yellow)
             glowButton(move: .yellow)
-           
+            
         }
     }
     
-    func startGame() {
+    public func startGame() {
         userMoves = []
         gameMoves = []
+        
         state = .playing
-        nextRound()
-
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.nextRound()
+        }
+        
+        
         
     }
     
-    func checkplay(move: GameMove) {
+    private func checkplay(move: GameMove) {
         
         userMoves.append(move)
         
@@ -119,17 +95,17 @@ class MainViewModel: ObservableObject {
         if checkIndex == gameMoves.count {
             self.state = .playing
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-        
+                
                 self.nextRound()
                 
             }
-           
+            
         }
         
     }
-
     
-    func gameOver() {
+    
+    private func gameOver() {
         state = .off
         userMoves = []
         gameMoves = []
@@ -138,7 +114,7 @@ class MainViewModel: ObservableObject {
         
     }
     
-    func nextRound() {
+    private func nextRound() {
         userMoves = []
         gameMoves.append(GameMove.allCases.randomElement()!)
         
@@ -146,13 +122,42 @@ class MainViewModel: ObservableObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
                 self?.glowButton(move: element)
                 self?.audioManager.playeFXSound(color: element)
+                
                 if index == (self?.gameMoves.count)! - 1 {
-                    self?.state = .waitingUserResponse
+                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
+                        self?.state = .waitingUserResponse
+                    }
                 }
             }
         }
         
-
+    }
+    
+    private func glowButton(move: GameMove) {
+        switch move {
+            
+        case .blue:
+            isBlueActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isBlueActive = false
+            }
+        case .green:
+            isGreenActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isGreenActive = false
+            }
+            
+        case .red:
+            isRedActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isRedActive = false
+            }
+        case .yellow:
+            isYellowActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isYellowActive = false
+            }
+        }
         
     }
 }

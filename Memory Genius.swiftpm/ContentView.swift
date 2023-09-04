@@ -67,6 +67,8 @@ struct ContentView: View {
                     } label: {
                         Capsule(style: .circular)
                             .frame(width: 200, height: 20)
+//                            .animation(.easeInOut(duration: 0.5), value: viewModel.isGreenActive)
+                            .foregroundColor(.green)
                             .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
                             
                     }
