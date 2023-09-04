@@ -8,18 +8,19 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "Meu App",
+    name: "Memory Genius",
     platforms: [
         .iOS("16.0")
     ],
     products: [
         .iOSApplication(
-            name: "Meu App",
+            name: "Memory Genius",
             targets: ["AppModule"],
+            teamIdentifier: "749Q737TF5",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .boat),
-            accentColor: .presetColor(.green),
+            appIcon: .placeholder(icon: .cloud),
+            accentColor: .presetColor(.teal),
             supportedDeviceFamilies: [
                 .pad,
                 .phone
@@ -29,7 +30,8 @@ let package = Package(
                 .landscapeRight,
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
-            ]
+            ],
+            appCategory: .arcadeGames
         )
     ],
     targets: [
