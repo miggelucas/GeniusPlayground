@@ -28,26 +28,47 @@ class MainViewModel: ObservableObject {
     var gameMoves: [GameMove] = []
     var userMoves: [GameMove] = []
     
-    
-    public func greenButtonPressed() {
-        if state == .waitingUserResponse  {
-            checkplay(move: .green)
+    private func glowButton(move: GameMove) {
+        switch move {
+            
+        case .blue:
+            isBlueActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isBlueActive = false
+            }
+        case .green:
             isGreenActive = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.isGreenActive = false
             }
+
+        case .red:
+            isRedActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isRedActive = false
+            }
+        case .yellow:
+            isYellowActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isYellowActive = false
+            }
         }
-       
         
+    }
+    
+    
+    public func greenButtonPressed() {
+        if state == .waitingUserResponse  {
+            checkplay(move: .green)
+            glowButton(move: .green)
+        }
     }
     
     public func redButtonPressed() {
         if state == .waitingUserResponse  {
             checkplay(move: .red)
-            isRedActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isRedActive = false
-            }
+            glowButton(move: .red)
+           
         }
         
     }
@@ -55,10 +76,8 @@ class MainViewModel: ObservableObject {
     public func blueButtonPressed() {
         if state == .waitingUserResponse  {
             checkplay(move: .blue)
-            isBlueActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isBlueActive = false
-            }
+            glowButton(move: .blue)
+           
         }
         
         
@@ -67,10 +86,8 @@ class MainViewModel: ObservableObject {
     public func yellowButtonPressed() {
         if state == .waitingUserResponse  {
             checkplay(move: .yellow)
-            isYellowActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.isYellowActive = false
-            }
+            glowButton(move: .yellow)
+           
         }
     }
     
@@ -127,7 +144,7 @@ class MainViewModel: ObservableObject {
         
         for (index, element) in gameMoves.enumerated() {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
-                print(element)
+                self?.glowButton(move: element)
                 self?.audioManager.playeFXSound(color: element)
                 if index == (self?.gameMoves.count)! - 1 {
                     self?.state = .waitingUserResponse
