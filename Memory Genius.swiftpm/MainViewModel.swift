@@ -80,17 +80,16 @@ class MainViewModel: ObservableObject {
         
         userMoves.append(move)
         
-        var checkIndex: Int = 0
+        var checkIndex: Int = userMoves.count - 1
         
-        for (index, element) in userMoves.enumerated() {
-            if element != gameMoves[index] {
-                gameOver()
-                return
-            } else {
-                audioManager.playeFXSound(color: move)
-                checkIndex += 1
-            }
+        if userMoves.last! == gameMoves[checkIndex] {
+            audioManager.playeFXSound(color: move)
+            checkIndex += 1
+        } else {
+            gameOver()
+            return
         }
+        
         
         if checkIndex == gameMoves.count {
             self.state = .playing

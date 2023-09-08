@@ -3,7 +3,7 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
+    @GestureState private var isPressing = false
     @StateObject var viewModel = MainViewModel()
     
     var isOn: Bool {
@@ -37,7 +37,7 @@ struct ContentView: View {
                             .blur(radius: isOn ? 0.5 : 0)
                             .shadow(color: isOn ? .green : .black, radius: 2)
                     }
-                   
+                    
                     VStack {
                         Text("Wait")
                         Circle()
@@ -46,7 +46,7 @@ struct ContentView: View {
                             .blur(radius: isPlaying ? 1 : 0)
                             .shadow(color: isPlaying ? .green : .black, radius: 2)
                     }
-                   
+                    
                     
                     VStack {
                         Text("Chose")
@@ -56,62 +56,53 @@ struct ContentView: View {
                             .blur(radius: isWaitingUser ? 1 : 0)
                             .shadow(color: isWaitingUser ? .green : .black, radius: 2)
                     }
-                 
+                    
                 }
                 
                 Spacer()
                 
                 VStack(spacing: 30) {
-                    Button {
-                        viewModel.greenButtonPressed()
-                    } label: {
-                        TrapezoidShape()
-                            .rotation(.degrees(180))
-                            .frame(width: 200, height: 75)
-//                            .animation(.easeInOut(duration: 0.5), value: viewModel.isGreenActive)
-                            .foregroundColor(.green)
-                            .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
-                            
-                    }
+                    TrapezoidShape()
+                        .rotation(.degrees(180))
+                        .frame(width: 200, height: 75)
+                        .foregroundColor(.green)
+                        .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
+                        .onTapGesture {
+                            viewModel.greenButtonPressed()
+                        }
+                    
                     HStack(spacing: 0) {
-                        Button {
-                            viewModel.redButtonPressed()
-                        } label: {
-                            TrapezoidShape()
-                                .rotation(.degrees(90))
-                                .frame(width: 200, height: 75)
-                                .foregroundColor(.red)
-                                .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
-                        }
-
                         
-                        Button {
-                            viewModel.blueButtonPressed()
-                        } label: {
-                            TrapezoidShape()
-                                .rotation(.degrees(270))
-                                .frame(width: 200, height: 75)
-                                .foregroundColor(.blue)
-                                .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )
-                        }
-                    }
-                    
-   
-
-                    
-                    Button {
-                        viewModel.yellowButtonPressed()
-                    } label: {
                         TrapezoidShape()
+                            .rotation(.degrees(90))
                             .frame(width: 200, height: 75)
-                            .foregroundColor(.yellow)
-                            .shadow(color: viewModel.isYellowActive ? .yellow : .black, radius: 5, y: 2 )
+                            .foregroundColor(.red)
+                            .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
+                            .onTapGesture {
+                                viewModel.redButtonPressed()
+                            }
+                        
+                        
+                        TrapezoidShape()
+                            .rotation(.degrees(270))
+                            .frame(width: 200, height: 75)
+                            .foregroundColor(.blue)
+                            .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )                            .onTapGesture {
+                                viewModel.blueButtonPressed()
+                            }
+                        
                     }
-
-
+                    
+                    
+                    TrapezoidShape()
+                        .frame(width: 200, height: 75)
+                        .foregroundColor(.yellow)
+                        .shadow(color: viewModel.isYellowActive ? .yellow : .black, radius: 5, y: 2 )
+                        .onTapGesture {
+                            viewModel.yellowButtonPressed()
+                        }
+                
                 }
-
-
                 
                 Spacer()
                 
@@ -122,9 +113,9 @@ struct ContentView: View {
                         .padding(.horizontal, 50)
                         .padding(.vertical, 10)
                         .background {
-       
+                            
                             Color.white
-
+                            
                         }
                         .cornerRadius(10)
                 }
@@ -133,9 +124,9 @@ struct ContentView: View {
                 
             }
             
-
+            
         }
-
+        
     }
 }
 
