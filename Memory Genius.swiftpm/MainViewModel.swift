@@ -14,10 +14,16 @@ class MainViewModel: ObservableObject {
     private var audioManager = AudioManager()
     
     enum State {
-        case off, playing, waitingUserResponse
+        case off, idle, playing, waitingUserResponse
     }
     
+    
     @Published var state: State = .off
+    @Published var score: Int = 0
+    
+    public var isOn: Bool {
+        state != .off
+    }
     
     @Published var isGreenActive: Bool = false
     @Published var isRedActive: Bool = false
@@ -27,64 +33,41 @@ class MainViewModel: ObservableObject {
     private var gameMoves: [GameMove] = []
     private var userMoves: [GameMove] = []
     
-    
-    public func greenButtonPressed() {
-        if state == .waitingUserResponse  {
-            checkplay(move: .green)
-            glowButton(move: .green)
+    public func ColorButtonPressed(move: GameMove) {
+        if isOn && state == .waitingUserResponse {
+            checkplay(move: move)
+            glowButton(move: move)
         }
     }
     
-    public func redButtonPressed() {
-        if state == .waitingUserResponse  {
-            checkplay(move: .red)
-            glowButton(move: .red)
-            
-        }
-        
-    }
-    
-    public func blueButtonPressed() {
-        if state == .waitingUserResponse  {
-            checkplay(move: .blue)
-            glowButton(move: .blue)
-            
-        }
-        
-        
-    }
-    
-    public func yellowButtonPressed() {
-        if state == .waitingUserResponse  {
-            checkplay(move: .yellow)
-            glowButton(move: .yellow)
-            
+    public func powerButtonPressed() {
+        if state == .off {
+            state = .idle
+        } else {
+            state = .off
         }
     }
     
     public func startGame() {
-        userMoves = []
-        gameMoves = []
-        
-        state = .playing
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.nextRound()
+        if isOn {
+            resetGameState()
+            state = .playing
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.nextRound()
+            }
         }
-        
-        
-        
+    
     }
     
     private func checkplay(move: GameMove) {
-        
         userMoves.append(move)
         
-        var checkIndex: Int = userMoves.count - 1
+        let checkIndex: Int = userMoves.count - 1
         
         if userMoves.last! == gameMoves[checkIndex] {
             audioManager.playeFXSound(color: move)
-            checkIndex += 1
+            
         } else {
             gameOver()
             return
@@ -93,8 +76,8 @@ class MainViewModel: ObservableObject {
         
         if checkIndex == gameMoves.count {
             self.state = .playing
+            self.score += 1
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                
                 self.nextRound()
                 
             }
@@ -103,14 +86,26 @@ class MainViewModel: ObservableObject {
         
     }
     
+    private func resetGameState() {
+        userMoves = []
+        gameMoves = []
+        score = 0
+    }
     
     private func gameOver() {
         state = .off
-        userMoves = []
-        gameMoves = []
+        resetGameState()
         audioManager.playGameOverSound()
         print("Errou otaru")
         
+    }
+    
+    private func playMove(for move: GameMove) {
+        if isOn {
+            glowButton(move: move)
+            audioManager.playeFXSound(color: move)
+            
+        }
     }
     
     private func nextRound() {
@@ -119,8 +114,8 @@ class MainViewModel: ObservableObject {
         
         for (index, element) in gameMoves.enumerated() {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.1) { [weak self] in
-                self?.glowButton(move: element)
-                self?.audioManager.playeFXSound(color: element)
+                
+                self?.playMove(for: element)
                 
                 if index == (self?.gameMoves.count)! - 1 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.0) { [weak self] in
@@ -134,7 +129,6 @@ class MainViewModel: ObservableObject {
     
     private func glowButton(move: GameMove) {
         switch move {
-            
         case .blue:
             isBlueActive = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
