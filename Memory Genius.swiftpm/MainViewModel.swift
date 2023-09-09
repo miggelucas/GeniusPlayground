@@ -44,6 +44,7 @@ class MainViewModel: ObservableObject {
         if state == .off {
             state = .idle
         } else {
+            resetGameState()
             state = .off
         }
     }
@@ -74,7 +75,7 @@ class MainViewModel: ObservableObject {
         }
         
         
-        if checkIndex == gameMoves.count {
+        if userMoves.count == gameMoves.count {
             self.state = .playing
             self.score += 1
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

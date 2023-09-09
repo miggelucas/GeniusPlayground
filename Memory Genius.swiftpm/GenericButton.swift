@@ -38,7 +38,7 @@ struct GenericButton: View {
             }
             .cornerRadius(100)
             .shadow(color: isActive ? .accentColor : .black,
-                    radius: isActive ? 10 : 5)
+                    radius: isActive ? 2 : 2)
             .onTapGesture {
                 onTap()
             }

@@ -22,7 +22,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            Color(uiColor: .darkGray)
+            Color.white
                 .ignoresSafeArea()
             
             VStack {
@@ -68,7 +68,7 @@ struct ContentView: View {
         Text("\(viewModel.score)")
             .font(.largeTitle)
             .foregroundColor(viewModel.isOn ? .accentColor : .gray)
-            .shadow(color: viewModel.isOn ? .accentColor : .black, radius: 5)
+            .shadow(color: viewModel.isOn ? .accentColor : .black, radius: 1)
     }
     
     private var gameStatusLedView: some View {
@@ -79,7 +79,7 @@ struct ContentView: View {
                     .frame(width: 20)
                     .foregroundColor(isOnMatch ? .accentColor : .black)
                     .blur(radius: isOnMatch ? 0.5 : 0)
-                    .shadow(color: isOnMatch ? .green : .black, radius: 2)
+                    .shadow(color: isOnMatch ? .accentColor : .black, radius: 2)
             }
             
             VStack {
