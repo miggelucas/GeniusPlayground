@@ -42,8 +42,10 @@ class MainViewModel: ObservableObject {
     
     public func powerButtonPressed() {
         if state == .off {
+            audioManager.playFXSound(.gameStart)
             state = .idle
         } else {
+            audioManager.playFXSound(.bip)
             resetGameState()
             state = .off
         }
@@ -53,7 +55,7 @@ class MainViewModel: ObservableObject {
         if isOn {
             resetGameState()
             state = .playing
-            
+            audioManager.playFXSound(.bip)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.nextRound()
             }
@@ -67,7 +69,7 @@ class MainViewModel: ObservableObject {
         let checkIndex: Int = userMoves.count - 1
         
         if userMoves.last! == gameMoves[checkIndex] {
-            audioManager.playeFXSound(color: move)
+            audioManager.playFXSound(color: move)
             
         } else {
             gameOver()
@@ -104,7 +106,7 @@ class MainViewModel: ObservableObject {
     private func playMove(for move: GameMove) {
         if isOn {
             glowButton(move: move)
-            audioManager.playeFXSound(color: move)
+            audioManager.playFXSound(color: move)
             
         }
     }

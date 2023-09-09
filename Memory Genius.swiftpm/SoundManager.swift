@@ -44,7 +44,7 @@ class AudioManager {
         }
     }
     
-    public func playeFXSound(color: GameMove) {
+    public func playFXSound(color: GameMove) {
         soundPlayer = nil
         
         let soundOfButton: FXSounds = getSoundRelatedToColor(color: color)
@@ -62,9 +62,25 @@ class AudioManager {
         }
     }
     
+    public func playFXSound(_ sound: FXSounds) {
+        soundPlayer = nil
+        
+        guard let soundURL = getSoundURL(sound: sound) else {
+            print("url não encontrado")
+            return
+        }
+        
+        do {
+            soundPlayer = try AVAudioPlayer(contentsOf: soundURL)
+            soundPlayer?.play()
+        } catch let error {
+            print("Erro ao reproduzir fx: \(error.localizedDescription)")
+        }
+    }
+    
 }
 
 enum FXSounds: String, CaseIterable {
-    case pickupCoin1, pickupCoin2, pickupCoin3, pickupCoin4, explosion
+    case pickupCoin1, pickupCoin2, pickupCoin3, pickupCoin4, explosion, gameStart, bip
     
 }
