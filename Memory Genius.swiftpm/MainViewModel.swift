@@ -9,58 +9,69 @@ import Foundation
 import SwiftUI
 
 
+enum GameMode: String, CaseIterable {
+    case easy, medium, hard, extreme
+}
+
 class MainViewModel: ObservableObject {
     
-    private var audioManager = AudioManager()
+    private var audioManager: AudioManager?
     
     enum State {
-        case off, idle, playing, waitingUserResponse
+        case idle, playing, waitingUserResponse
     }
     
-    
-    @Published var state: State = .off
+    @Published var state: State = .idle
     @Published var score: Int = 0
     
-    public var isOn: Bool {
-        state != .off
+    var isOn: Bool {
+        state != .idle
     }
+    
     
     @Published var isGreenActive: Bool = false
     @Published var isRedActive: Bool = false
     @Published var isBlueActive: Bool = false
     @Published var isYellowActive: Bool = false
     
+    @Published var mode: GameMode = .easy
+    
+    public var avaibleMoves: [GameMove] {
+        switch mode {
+        case .easy:
+            return [.blue, .red, .green]
+        case .medium:
+            return [.blue, .red, .green, .yellow]
+        case .hard:
+            return [.blue, .red, .green, .yellow, .red]
+        case .extreme:
+            return [.blue, .red, .green, .yellow, .red, .blue]
+        }
+    }
+    
     private var gameMoves: [GameMove] = []
     private var userMoves: [GameMove] = []
     
     public func ColorButtonPressed(move: GameMove) {
-        if isOn && state == .waitingUserResponse {
+        if state == .waitingUserResponse {
             checkplay(move: move)
             glowButton(move: move)
         }
     }
     
     public func powerButtonPressed() {
-        if state == .off {
-            audioManager.playFXSound(.gameStart)
-            state = .idle
-        } else {
-            audioManager.playFXSound(.bip)
-            resetGameState()
-            state = .off
-        }
+        
     }
     
     public func startGame() {
-        if isOn {
-            resetGameState()
-            state = .playing
-            audioManager.playFXSound(.bip)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.nextRound()
-            }
+        resetGameState()
+        state = .playing
+        audioManager?.playFXSound(.bip)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.nextRound()
         }
-    
+        
+        
     }
     
     private func checkplay(move: GameMove) {
@@ -69,7 +80,7 @@ class MainViewModel: ObservableObject {
         let checkIndex: Int = userMoves.count - 1
         
         if userMoves.last! == gameMoves[checkIndex] {
-            audioManager.playFXSound(color: move)
+            audioManager?.playFXSound(color: move)
             
         } else {
             gameOver()
@@ -93,12 +104,13 @@ class MainViewModel: ObservableObject {
         userMoves = []
         gameMoves = []
         score = 0
+        state = .idle
     }
     
     private func gameOver() {
-        state = .off
+        
         resetGameState()
-        audioManager.playGameOverSound()
+        audioManager?.playGameOverSound()
         print("Errou otaru")
         
     }
@@ -106,14 +118,14 @@ class MainViewModel: ObservableObject {
     private func playMove(for move: GameMove) {
         if isOn {
             glowButton(move: move)
-            audioManager.playFXSound(color: move)
+            audioManager?.playFXSound(color: move)
             
         }
     }
     
     private func nextRound() {
         userMoves = []
-        gameMoves.append(GameMove.allCases.randomElement()!)
+        gameMoves.append(avaibleMoves.randomElement()!)
         
         for (index, element) in gameMoves.enumerated() {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 1.1) { [weak self] in

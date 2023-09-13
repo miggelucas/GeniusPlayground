@@ -6,10 +6,6 @@ struct ContentView: View {
     @GestureState private var isPressing = false
     @StateObject var viewModel = MainViewModel()
     
-    var isOnMatch: Bool {
-        viewModel.state != .off && viewModel.state != .idle
-    }
-    
     var isPlaying: Bool {
         viewModel.state == .playing
         
@@ -20,9 +16,10 @@ struct ContentView: View {
     }
     
     
+    
     var body: some View {
         ZStack {
-            Color.white
+            Color.black
                 .ignoresSafeArea()
             
             VStack {
@@ -32,10 +29,39 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                ColorGameButtons
-                .overlay {
-                  scoreLabelView
+                if viewModel.state == .idle {
+                    VStack {
+                         
+                        
+                        Picker(selection: $viewModel.mode) {
+                            ForEach(GameMode.allCases, id: \.self) { mode in
+                                Text(mode.rawValue)
+                                    .foregroundColor(.red)
+                            }
+                        } label: {
+                            Text("Select Dificulty")
+                                .foregroundColor(.blue)
+                        }
+                    
+                        
+                    }
+                    .pickerStyle(.segmented)
+                    .foregroundColor(.white)
+                    
+                } else {
+                    switch viewModel.mode {
+                    case .easy:
+                        colorGameEasy
+                    case .medium:
+                        colorGameMedium
+                    case .hard:
+                        colorGameHard
+                    case .extreme:
+                        colorGameExtreme
+                    }
+                    
                 }
+               
                 
                 Spacer()
                 
@@ -52,9 +78,6 @@ struct ContentView: View {
     
     private var genericGameButtons: some View {
         HStack (spacing: 50) {
-            GenericButton(style: .power, isActive: viewModel.isOn) {
-                viewModel.powerButtonPressed()
-            }
             
             GenericButton(style: .play, isActive: viewModel.isOn) {
                 viewModel.startGame()
@@ -73,17 +96,10 @@ struct ContentView: View {
     
     private var gameStatusLedView: some View {
         HStack(spacing: 100) {
-            VStack {
-                Text("Playing")
-                Circle()
-                    .frame(width: 20)
-                    .foregroundColor(isOnMatch ? .accentColor : .black)
-                    .blur(radius: isOnMatch ? 0.5 : 0)
-                    .shadow(color: isOnMatch ? .accentColor : .black, radius: 2)
-            }
             
             VStack {
                 Text("Wait")
+                    .foregroundColor(.accentColor)
                 Circle()
                     .frame(width: 20)
                     .foregroundColor(isPlaying ? .accentColor : .black)
@@ -94,6 +110,8 @@ struct ContentView: View {
             
             VStack {
                 Text("Chose")
+                    .foregroundColor(.accentColor)
+                
                 Circle()
                     .frame(width: 20)
                     .foregroundColor(isWaitingUser ? .accentColor : .black)
@@ -104,48 +122,87 @@ struct ContentView: View {
         }
     }
     
-    private var ColorGameButtons: some View {
-        VStack(spacing: 30) {
-            TrapezoidShape()
-                .rotation(.degrees(180))
-                .frame(width: 200, height: 75)
-                .foregroundColor(viewModel.isOn ?  .green : .gray)
-                .shadow(color: viewModel.isGreenActive ? .green : .black, radius: 5, y: 2 )
-                .onTapGesture {
-                    viewModel.ColorButtonPressed(move: .green)
-                }
-            
-            HStack(spacing: 0) {
+    private var colorGameEasy: some View {
+        VStack {
+            ColorButton(move: .red, shouldGlow: $viewModel.isRedActive)
+            HStack {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
                 
-                TrapezoidShape()
-                    .rotation(.degrees(90))
-                    .frame(width: 200, height: 75)
-                    .foregroundColor(viewModel.isOn ? .red : .gray)
-                    .shadow(color: viewModel.isRedActive ? .red : .black, radius: 5, y: 2 )
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+        }
+    }
+    
+    
+    private var colorGameHard: some View {
+        VStack(spacing: 5) {
+            ColorButton(move: .red, shouldGlow: $viewModel.isRedActive)
+            
+            HStack(spacing: 80) {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+            
+            HStack(spacing: 20) {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+        }
+    }
+    
+    private var colorGameExtreme: some View {
+        VStack {
+            HStack(spacing: 30) {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+            HStack(spacing: 150) {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+            HStack(spacing: 30) {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+            }
+            
+        }
+    }
+    
+    
+    private var colorGameMedium: some View {
+        VStack {
+            HStack {
+                ColorButton(move: .blue, shouldGlow: $viewModel.isBlueActive)
+                    .onTapGesture {
+                        viewModel.ColorButtonPressed(move: .blue)
+                    }
+                
+                ColorButton(move: .red, shouldGlow: $viewModel.isRedActive)
                     .onTapGesture {
                         viewModel.ColorButtonPressed(move: .red)
                     }
                 
                 
-                TrapezoidShape()
-                    .rotation(.degrees(270))
-                    .frame(width: 200, height: 75)
-                    .foregroundColor(viewModel.isOn ? .blue : .gray)
-                    .shadow(color: viewModel.isBlueActive ? .blue : .black, radius: 5, y: 2 )                            .onTapGesture {
-                        viewModel.ColorButtonPressed(move: .blue)
+            }
+            
+            HStack {
+                ColorButton(move: .green, shouldGlow: $viewModel.isGreenActive)
+                    .onTapGesture {
+                        viewModel.ColorButtonPressed(move: .green)
+                    }
+                
+                
+                ColorButton(move: .yellow, shouldGlow: $viewModel.isYellowActive)
+                    .onTapGesture {
+                        viewModel.ColorButtonPressed(move: .yellow)
                     }
                 
             }
-            
-            
-            TrapezoidShape()
-                .frame(width: 200, height: 75)
-                .foregroundColor(viewModel.isOn ? .yellow : .gray)
-                .shadow(color: viewModel.isYellowActive ? .yellow : .black, radius: 5, y: 2 )
-                .onTapGesture {
-                    viewModel.ColorButtonPressed(move: .yellow)
-                }
-        
         }
     }
 }
